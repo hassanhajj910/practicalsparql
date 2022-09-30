@@ -1,5 +1,4 @@
 from http import client
-from pickletools import read_stringnl_noescape
 from SPARQLWrapper import SPARQLWrapper, JSON, CSV, GET, POST, SELECT, SPARQLExceptions
 import os
 import io
