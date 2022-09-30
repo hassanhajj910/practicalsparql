@@ -1,5 +1,5 @@
 from http import client
-from SPARQLWrapper import SPARQLWrapper, JSON, CSV, GET, POST, SELECT, SPARQLExceptions
+from SPARQLWrapper import SPARQLWrapper, JSON, CSV, GET, POST, SELECT, CONSTRUCT, SPARQLExceptions
 import os
 import io
 import time
@@ -134,6 +134,37 @@ class practicalWrapper(SPARQLWrapper):
                 counter += 1
                 if counter == 4:
                     raise client.HTTPException('-- After several retires, operation ended --')            
+
+    def dump_as_ttl(self, q:str, outpath:str)->None:
+        # add exception for location and file place
+        # add exception on query types
+        with open(outpath, 'w') as mydump:
+            self.setQuery(q)
+            if self.queryType != CONSTRUCT:
+                raise ValueError('Only CONSTRUCT queries are accepted')
+            self.setReturnFormat('turtle')
+            counter = 0
+            while True:
+                try:
+                    results = self.query().convert()
+                    counter = 0
+                    break
+                except SPARQLExceptions.EndPointInternalError:
+                    raise SPARQLExceptions.EndPointInternalError('SPARQL query error, check syntax') 
+                
+                except (SPARQLExceptions.EndPointNotFound): 
+                    print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
+                    time.sleep(5)
+                    counter += 1
+                    if counter == 4:
+                        raise SPARQLExceptions.EndPointNotFound('-- After several retries, operaton ended --')
+                except (client.HTTPException, client.RemoteDisconnected):
+                    print('------ HTTP Exception or Remote Disconnected - Sleeping for 3 seconds and retrying ------')
+                    time.sleep(5)
+                    counter += 1
+                    if counter == 4:
+                        raise client.HTTPException('-- After several retires, operation ended --')            
+            mydump.write(results.decode('utf-8'))
 
 
         
