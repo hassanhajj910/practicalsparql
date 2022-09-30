@@ -4,7 +4,6 @@ import os
 import io
 import time
 import rdflib
-from rdflib import Graph
 import numpy as np
 
 
