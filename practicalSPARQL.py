@@ -1,5 +1,5 @@
 from http import client
-from SPARQLWrapper import SPARQLWrapper, JSON, CSV, GET, POST, SELECT, CONSTRUCT, SPARQLExceptions
+from SPARQLWrapper import SPARQLWrapper, JSON, CSV, POST, SELECT, CONSTRUCT, SPARQLExceptions
 import os
 import io
 import time
@@ -92,7 +92,7 @@ class practicalWrapper(SPARQLWrapper):
                 time.sleep(5)
                 counter += 1
                 if counter == 4:
-                    raise SPARQLExceptions.EndPointNotFound('-- After several retries, operaton ended --')
+                    raise SPARQLExceptions.EndPointNotFound('-- After several retries, operation ended --')
             except (client.HTTPException, client.RemoteDisconnected):
                 print('------ HTTP Exception or Remote Disconnected - Sleeping for 3 seconds and retrying ------')
                 time.sleep(5)
@@ -127,7 +127,7 @@ class practicalWrapper(SPARQLWrapper):
                 time.sleep(5)
                 counter += 1
                 if counter == 4:
-                    raise SPARQLExceptions.EndPointNotFound('-- After several retries, operaton ended --')
+                    raise SPARQLExceptions.EndPointNotFound('-- After several retries, operation ended --')
             except (client.HTTPException, client.RemoteDisconnected):
                 print('------ HTTP Exception or Remote Disconnected - Sleeping for 3 seconds and retrying ------')
                 time.sleep(5)
