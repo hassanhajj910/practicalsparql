@@ -4,3 +4,5 @@ test.sparql
 test2.sparql
 testTTL.ttl
 testing.ipynb
+spacytest.ipynb
+.DS_Store
