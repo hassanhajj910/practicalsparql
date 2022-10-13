@@ -78,6 +78,11 @@ class rdfGRAPH(rdflib.Graph):
 
 
 class practicalWrapper(SPARQLWrapper):
+    """Subclass of SPARQL Wrapper -> https://github.com/RDFLib/sparqlwrapper
+    Some extra extensions to simplify some workflows
+
+    """
+    
     def __init__(self, endpoint, updateEndpoint=None, returnFormat=..., defaultGraph=None, agent='sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper)'):
         super().__init__(endpoint, updateEndpoint, returnFormat, defaultGraph, agent)
     
