@@ -6,3 +6,5 @@ testTTL.ttl
 testing.ipynb
 spacytest.ipynb
 .DS_Store
+test.ipynb
+src/practicalSPARQL.egg-info/

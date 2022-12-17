@@ -1,7 +1,7 @@
 #####
 # practical sparql wrapper around SPARQLWrappe and rdflib
 # aims to make interaction with SPARQL into one liners with some flexibility for batch processes. 
-# Hassan El-Hajj
+# Hassan El-Hajj - 2022
 # MPIWG and BIFOLD
 #####
 
