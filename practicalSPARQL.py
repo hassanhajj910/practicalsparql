@@ -1,3 +1,11 @@
+#####
+# practical sparql wrapper around SPARQLWrappe and rdflib
+# aims to make interaction with SPARQL into one liners with some flexibility for batch processes. 
+# Hassan El-Hajj
+# MPIWG and BIFOLD
+#####
+
+
 from http import client
 from SPARQLWrapper import SPARQLWrapper, JSON, CSV, POST, SELECT, CONSTRUCT, SPARQLExceptions
 import os
