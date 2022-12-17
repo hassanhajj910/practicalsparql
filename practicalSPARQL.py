@@ -122,7 +122,7 @@ class practicalWrapper(SPARQLWrapper):
                 if counter == 4:
                     raise SPARQLExceptions.EndPointNotFound('-- After several retries, operation ended --')
             except (client.HTTPException, client.RemoteDisconnected):
-                print('------ HTTP Exception or Remote Disconnected - Sleeping for 3 seconds and retrying ------')
+                print('------ HTTP Exception or Remote Disconnected - Sleeping for 5 seconds and retrying ------')
                 time.sleep(5)
                 counter += 1
                 if counter == 4:
