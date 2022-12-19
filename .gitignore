@@ -8,3 +8,5 @@ spacytest.ipynb
 .DS_Store
 test.ipynb
 src/practicalSPARQL.egg-info/
+query.sparql
+queryWiki.sparql
