@@ -199,7 +199,7 @@ class practicalWrapper(SPARQLWrapper):
         self.setQuery(q)
         if self.queryType != CONSTRUCT:
             raise ValueError('Only CONSTRUCT queries are accepted')
-        self.setReturnFormat('turtle')
+
 
 
         while True:
@@ -210,12 +210,14 @@ class practicalWrapper(SPARQLWrapper):
             except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
                 raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
             
+
+        ttl = results.serialize(format ='ttl')
         if outpath is None:
-            return results.decode('utf-8')
+            return ttl
         else:
             with open(outpath, 'w') as mydump:           
-                mydump.write(results.decode('utf-8'))
-            return results.decode('utf-8')
+                mydump.write(ttl)
+            return ttl
 
     def dump_graph(self, graph:str, outpath=None):
         """Dump a specific graph as TTL
