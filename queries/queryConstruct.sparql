@@ -1,0 +1,5 @@
+CONSTRUCT{?s ?p ?o}
+WHERE{
+BIND(wd:Q42442324 as ?s)
+  ?s ?p ?o
+}

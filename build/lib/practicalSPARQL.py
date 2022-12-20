@@ -1,18 +1,20 @@
 #####
-# practical sparql wrapper around SPARQLWrappe and rdflib
+# practical sparql built extending SPARQLWrapper and rdflib
 # aims to make interaction with SPARQL into one liners with some flexibility for batch processes. 
-# Hassan El-Hajj - 2022
+# Hassan El-Hajj
 # MPIWG and BIFOLD
 #####
 
 
 from http import client
-from SPARQLWrapper import SPARQLWrapper, JSON, CSV, POST, SELECT, CONSTRUCT, SPARQLExceptions
+from SPARQLWrapper import SPARQLWrapper, JSON, POST, DELETE, SELECT, CONSTRUCT, SPARQLExceptions
 import os
 import io
 import time
 import rdflib
 import numpy as np
+
+
 
 
 def path_valid(path:str)->bool:
@@ -28,7 +30,7 @@ def stringify_SPARQL(
     query:str, 
     includesVariables = False, 
     variable_dict = None,
-    is_file = False
+    is_file = True
     )->str:
     """Function to modify a sparql query
     Returns query string
@@ -94,6 +96,7 @@ class practicalWrapper(SPARQLWrapper):
     def __init__(self, endpoint, updateEndpoint=None, returnFormat=..., defaultGraph=None, agent='sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper)'):
         super().__init__(endpoint, updateEndpoint, returnFormat, defaultGraph, agent)
     
+
     def select_as_dataframe(self, q:str):
         """SELECT QUERY from a string variable
         Returns pandas DF as CSV
@@ -105,7 +108,7 @@ class practicalWrapper(SPARQLWrapper):
         self.setQuery(q)
         if self.queryType != SELECT:
             raise ValueError('Only SELECT queries are accepted')
-        self.setReturnFormat(CSV)
+        self.setReturnFormat(JSON)
 
         counter = 0
         while True:
@@ -113,8 +116,8 @@ class practicalWrapper(SPARQLWrapper):
                 results = self.query().convert()
                 counter = 0
                 break
-            except (SPARQLExceptions.EndPointInternalError):
-                raise SPARQLExceptions.EndPointInternalError('SPARQL query error, check syntax')                
+            except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
+                raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')               
             except (SPARQLExceptions.EndPointNotFound): 
                 print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
                 time.sleep(5)
@@ -128,22 +131,38 @@ class practicalWrapper(SPARQLWrapper):
                 if counter == 4:
                     raise client.HTTPException('-- After several retires, operation ended --')
 
-        results = io.StringIO(results.decode("utf-8"))
-        results = pd.read_csv(results, sep=',')
+        # results = io.StringIO(results.decode("utf-8"))
+        # results = pd.read_csv(results, sep=',')
+        head = results["head"]["vars"]
+        items = results["results"]["bindings"]
+        items_container = [ [] for h in range(len(head))]
 
-        # add possibility of filtering by providing a function
 
+        if len(items) == 0:                         # if empty results                            
+            for i in range(len(items_container)):
+                items_container[i].append(np.nan)
+        else:                                       # if results exist
+            for item in items:
+                for ind, var in enumerate(head):
+                    if var in item.keys():
+                        items_container[ind].append(item[var]['value'].rstrip())
+                    else:
+                        items_container[ind].append(np.nan)
 
-        return results
+        res = pd.DataFrame(columns=head, data = np.column_stack(items_container))
 
-    def post_query(self, q:str):
+        return res
+
+    def update_query(self, q:str):
         """Post a SPARQL Query -> Insert or Delete.
         q: SPARQL query as string
         
         """
         self.setQuery(q)
-        if self.queryType != POST:
-            raise ValueError('Only POST queries are accepted')
+        self.setMethod(POST)
+        print(self.queryType)
+        if (self.queryType != POST) and (self.queryType != DELETE) and (self.queryType != 'DROP'):
+            raise ValueError('Only POST/DELETE queries are accepted')
         
         counter = 0
         while True:
@@ -151,8 +170,8 @@ class practicalWrapper(SPARQLWrapper):
                 results = self.query().convert()
                 counter = 0
                 break
-            except SPARQLExceptions.EndPointInternalError:
-                raise SPARQLExceptions.EndPointInternalError('SPARQL query error, check syntax') 
+            except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
+                raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
             
             except (SPARQLExceptions.EndPointNotFound): 
                 print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
@@ -167,7 +186,7 @@ class practicalWrapper(SPARQLWrapper):
                 if counter == 4:
                     raise client.HTTPException('-- After several retires, operation ended --')            
 
-    def construct_as_ttl(self, q:str, outpath:str)->None:
+    def construct_as_ttl(self, q:str, outpath = None):
         """Construct a TTL file from a SPARQL query
         returns a .ttl file
 
@@ -177,35 +196,28 @@ class practicalWrapper(SPARQLWrapper):
         """
         # add exception for location and file place
         # add exception on query types
-        with open(outpath, 'w') as mydump:
-            self.setQuery(q)
-            if self.queryType != CONSTRUCT:
-                raise ValueError('Only CONSTRUCT queries are accepted')
-            self.setReturnFormat('turtle')
-            counter = 0
-            while True:
-                try:
-                    results = self.query().convert()
-                    counter = 0
-                    break
-                except SPARQLExceptions.EndPointInternalError:
-                    raise SPARQLExceptions.EndPointInternalError('SPARQL query error, check syntax') 
-                
-                except (SPARQLExceptions.EndPointNotFound): 
-                    print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
-                    time.sleep(5)
-                    counter += 1
-                    if counter == 4:
-                        raise SPARQLExceptions.EndPointNotFound('-- After several retries, operaton ended --')
-                except (client.HTTPException, client.RemoteDisconnected):
-                    print('------ HTTP Exception or Remote Disconnected - Sleeping for 3 seconds and retrying ------')
-                    time.sleep(5)
-                    counter += 1
-                    if counter == 4:
-                        raise client.HTTPException('-- After several retires, operation ended --')            
-            mydump.write(results.decode('utf-8'))
+        self.setQuery(q)
+        if self.queryType != CONSTRUCT:
+            raise ValueError('Only CONSTRUCT queries are accepted')
+        self.setReturnFormat('turtle')
 
-    def dump_graph(self, graph:str, outpath:str):
+
+        while True:
+
+            try:
+                results = self.query().convert()
+                break
+            except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
+                raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
+            
+        if outpath is None:
+            return results.decode('utf-8')
+        else:
+            with open(outpath, 'w') as mydump:           
+                mydump.write(results.decode('utf-8'))
+            return results.decode('utf-8')
+
+    def dump_graph(self, graph:str, outpath=None):
         """Dump a specific graph as TTL
         graph: string of graph URI, if None, dump content of triple store
         outpath: output directory
@@ -221,9 +233,10 @@ class practicalWrapper(SPARQLWrapper):
                 }
             """
             print('--- Processing Complete Graph --- This might take a while depending on the size of your database ---')
-            self.construct_as_ttl(q, outpath)
+            # self.construct_as_ttl(q, outpath)
         else:
-            q = """CONSTRUCT{
+            q = """
+            CONSTRUCT{
                 ?s ?p ?o
                 }
             WHERE{GRAPH <{G}>{
@@ -231,8 +244,12 @@ class practicalWrapper(SPARQLWrapper):
                     }
                 }
             """.replace('{G}', graph)
+            # self.construct_as_ttl(q, outpath)
+        g = self.construct_as_ttl(q)
+        if outpath is None:
+            return g
+        else:
             self.construct_as_ttl(q, outpath)
+            return g
 
-        
-
-
+            
