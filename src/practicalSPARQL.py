@@ -200,8 +200,6 @@ class practicalWrapper(SPARQLWrapper):
         if self.queryType != CONSTRUCT:
             raise ValueError('Only CONSTRUCT queries are accepted')
 
-
-
         while True:
 
             try:
@@ -209,7 +207,7 @@ class practicalWrapper(SPARQLWrapper):
                 break
             except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
                 raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
-            
+        
 
         ttl = results.serialize(format ='ttl')
         if outpath is None:
