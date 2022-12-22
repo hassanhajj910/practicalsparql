@@ -13,9 +13,7 @@ setup(
     author='hassanhajj910@gmail.com',
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Operating Sysmte :: OS Independent",
-        "License :: MIT License" 
+        "Programming Language :: Python :: 3.8"
     ],
     long_description=longDesc,
     long_description_content_type = "text/markdown",
