@@ -105,6 +105,7 @@ class practicalWrapper(SPARQLWrapper):
         
         """
         import pandas as pd
+        self.resetQuery()
         self.setQuery(q)
         if self.queryType != SELECT:
             raise ValueError('Only SELECT queries are accepted')
@@ -158,6 +159,7 @@ class practicalWrapper(SPARQLWrapper):
         q: SPARQL query as string
         
         """
+        self.resetQuery()
         self.setQuery(q)
         self.setMethod(POST)
         print(self.queryType)
@@ -196,11 +198,10 @@ class practicalWrapper(SPARQLWrapper):
         """
         # add exception for location and file place
         # add exception on query types
+        self.resetQuery()
         self.setQuery(q)
         if self.queryType != CONSTRUCT:
             raise ValueError('Only CONSTRUCT queries are accepted')
-
-
 
         while True:
 
@@ -209,9 +210,9 @@ class practicalWrapper(SPARQLWrapper):
                 break
             except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
                 raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
-            
+        
 
-        ttl = results.serialize(format ='ttl')
+        ttl = results.serialize(format ='nt11')
         if outpath is None:
             return ttl
         else:
