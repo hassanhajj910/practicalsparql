@@ -1,12 +1,4 @@
 __pycache__
-query_information_init.py
-test.sparql
-test2.sparql
-testTTL.ttl
-test.ipynb
-spacytest.ipynb
 .DS_Store
-test.ipynb
 src/practicalSPARQL.egg-info/
-query.sparql
-queryWiki.sparql
+practicalsparql_recipe
