@@ -11,12 +11,13 @@ setup(
     py_modules=["practicalSPARQL"],
     package_dir={'':'src'},
     author='hassanhajj910@gmail.com',
+    url='https://github.com/hassanhajj910/practicalsparql',
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        
+
 
     ],
     long_description=longDesc,
