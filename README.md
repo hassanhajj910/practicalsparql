@@ -1,8 +1,12 @@
 # practicalSPARQL
 
-## Install
+## Install using pip
 ``` 
 pip install practicalsparql
+```
+## Install using conda from conda-forge
+```
+conda install -c conda-forge practicalsparql
 ```
 
 
