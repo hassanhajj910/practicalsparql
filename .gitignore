@@ -2,3 +2,6 @@ __pycache__
 .DS_Store
 src/practicalSPARQL.egg-info/
 practicalsparql_recipe
+debug.ipynb
+config_spraql_local.json
+old_version

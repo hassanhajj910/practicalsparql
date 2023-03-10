@@ -7,7 +7,7 @@
 
 
 from http import client
-from SPARQLWrapper import SPARQLWrapper, JSON, POST, DELETE, SELECT, CONSTRUCT, SPARQLExceptions
+from SPARQLWrapper import SPARQLWrapper, JSON, POST, DELETE, SELECT, CONSTRUCT, INSERT, SPARQLExceptions
 import os
 import io
 import time
@@ -163,7 +163,7 @@ class practicalWrapper(SPARQLWrapper):
         self.setQuery(q)
         self.setMethod(POST)
         print(self.queryType)
-        if (self.queryType != POST) and (self.queryType != DELETE) and (self.queryType != 'DROP'):
+        if (self.queryType != POST) and (self.queryType != DELETE) and (self.queryType != 'DROP') and (self.queryType != INSERT):
             raise ValueError('Only POST/DELETE queries are accepted')
         
         counter = 0
