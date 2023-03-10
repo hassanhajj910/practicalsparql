@@ -1,5 +1,5 @@
 # practicalSPARQL
-
+Version 0.0.3
 ## Install using pip
 ``` 
 pip install practicalsparql
