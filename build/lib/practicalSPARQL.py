@@ -80,6 +80,7 @@ class rdfGRAPH(rdflib.Graph):
         import pandas as pd
         res = self.query(q)
         cols = list(res.vars)
+        cols = [str(x) for x in cols]
         res = np.array(list(res))
         df = pd.DataFrame(data = res, columns=cols)
         return df
