@@ -118,9 +118,9 @@ class practicalWrapper(SPARQLWrapper):
                 results = self.query().convert()
                 counter = 0
                 break
-            except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
-                raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')               
-            except (SPARQLExceptions.EndPointNotFound): 
+            except (SPARQLExceptions.QueryBadFormed):
+                raise SPARQLExceptions.QueryBadFormed('------ SPARQL query error, check syntax ------')               
+            except (SPARQLExceptions.EndPointNotFound, SPARQLExceptions.EndPointInternalError): 
                 print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
                 time.sleep(5)
                 counter += 1
@@ -173,10 +173,10 @@ class practicalWrapper(SPARQLWrapper):
                 results = self.query().convert()
                 counter = 0
                 break
-            except (SPARQLExceptions.EndPointInternalError, SPARQLExceptions.QueryBadFormed):
-                raise SPARQLExceptions.EndPointInternalError('------ SPARQL query error, check syntax ------')
+            except (SPARQLExceptions.QueryBadFormed):
+                raise SPARQLExceptions.QueryBadFormed('------ SPARQL query error, check syntax ------')
             
-            except (SPARQLExceptions.EndPointNotFound): 
+            except (SPARQLExceptions.EndPointNotFound, SPARQLExceptions.EndPointInternalError): 
                 print('------ Endpoint not found - Sleeping for 5 seconds and retrying ------')
                 time.sleep(5)
                 counter += 1
