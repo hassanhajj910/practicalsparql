@@ -82,6 +82,9 @@ class rdfGRAPH(rdflib.Graph):
         cols = list(res.vars)
         cols = [str(x) for x in cols]
         res = np.array(list(res))
+        # if no results, return an empty df. 
+        if len(res) == 0:
+            res = [[np.nan for x in range(len(cols))]]
         df = pd.DataFrame(data = res, columns=cols)
         return df
 

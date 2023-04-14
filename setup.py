@@ -6,7 +6,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name="practicalSPARQL",
-    version='0.0.5',
+    version='0.0.6',
     description="Small wrapper to simplify the interaction with SPARQL endpoints. Built on top of sparqlwrapper and RDFlib",
     py_modules=["practicalSPARQL"],
     package_dir={'':'src'},
