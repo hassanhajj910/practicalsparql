@@ -1,3 +1,4 @@
 SPARQLWrapper
 rdflib
 numpy
+pandas
