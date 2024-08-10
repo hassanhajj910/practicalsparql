@@ -1,0 +1,4 @@
+http
+SPARQLWrapper
+rdflib
+numpy
